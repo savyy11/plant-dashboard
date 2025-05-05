@@ -1,0 +1,60 @@
+/* Dashboard.css */
+
+/* General styles */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  background-image: '../../assets/light.png';
+}
+
+/* Dashboard layout */
+.dashboard {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+}
+
+
+/* Content area */
+.content {
+  flex-grow: 1;
+  margin-left: 250px;
+  padding: 40px;
+  background: #ffffff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-image: '../../assets/link.png';
+}
+
+/* Title styling */
+.content h1 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+/* Paragraph styling */
+.content p {
+  font-size: 1.2rem;
+  color: #666;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .dashboard {
+    flex-direction: column;
+  }
+
+ 
+
+  .content {
+    margin-left: 0;
+    padding: 20px;
+  }
+}

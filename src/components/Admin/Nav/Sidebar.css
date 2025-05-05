@@ -1,0 +1,114 @@
+/* ==========================
+   Sidebar Container
+========================== */
+.sidebar {
+  width: 250px;
+  height: 100vh;
+  background-color: #1e293b; /* modern dark slate */
+  color: #f8fafc;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 30px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  box-shadow: 4px 0 16px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  z-index: 1000;
+  border-right: 2px solid #334155; /* subtle border */
+}
+
+/* ==========================
+ Header
+========================== */
+.sidebar h2 {
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  margin: 0;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+/* ==========================
+ Logo
+========================== */
+.side-logo {
+  max-width: 200px;
+  margin: 0 auto 30px;
+  display: block;
+}
+
+/* ==========================
+ Navigation
+========================== */
+.sidebar nav {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.sidebar nav a {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 20px;
+  font-size: 1.15rem;
+  color: #f8fafc;
+  text-decoration: none;
+  border-radius: 10px;
+  transition: background-color 0.3s ease, padding 0.3s ease;
+  font-weight: 500;
+}
+
+/* Hover Effect */
+.sidebar nav a:hover {
+  background-color: #334155;
+  padding-left: 22px; /* subtle left padding effect */
+}
+
+/* Active Link */
+.sidebar nav a.active {
+  background-color: #475569;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* ==========================
+ Responsive Sidebar
+========================== */
+@media (max-width: 768px) {
+  .sidebar {
+      width: 100%;
+      height: auto;
+      position: relative;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+  }
+
+  .sidebar h2 {
+      font-size: 1.6rem;
+      margin: 0;
+  }
+
+  .sidebar nav {
+      flex-direction: row;
+      gap: 12px;
+      justify-content: center;
+      width: auto;
+  }
+
+  .sidebar nav a {
+      font-size: 1.1rem;
+      padding: 12px 16px;
+      transition: padding 0.2s ease;
+  }
+
+  .sidebar nav a:hover {
+      padding-left: 18px;
+  }
+}

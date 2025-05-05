@@ -1,0 +1,166 @@
+/* General page styles with full background */
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: url('https://source.unsplash.com/1600x900/?nature,plants') no-repeat center center fixed;
+  background-size: cover;
+  color: #fff;
+}
+
+/* Dashboard layout */
+.dashboard {
+  display: flex;
+  height: 100vh;
+}
+
+
+/* Form container */
+.form-container {
+  flex-grow: 1;
+  margin-left: 260px;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 850px;
+  max-height: 900px;
+  margin: 50px auto;
+}
+
+/* Form heading */
+.form-container h2 {
+  font-size: 2.2rem;
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+
+/* Form structure */
+form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Input fields */
+.form-input, .form-textarea {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease-in-out;
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.form-input:focus, .form-textarea:focus {
+  border-color: #2c3e50;
+  outline: none;
+  box-shadow: 0 0 8px rgba(44, 62, 80, 0.5);
+  transform: scale(1.02);
+}
+
+/* Textarea field */
+.form-textarea {
+  height: 120px;
+  resize: vertical;
+}
+
+/* Submit button */
+.form-button {
+  background: linear-gradient(135deg, #2c3e50, #1a252f);
+  color: white;
+  border: none;
+  padding: 14px;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.form-button:hover {
+  background: linear-gradient(135deg, #1a252f, #2c3e50);
+  transform: scale(1.05);
+}
+
+/* Image upload field */
+.image-label {
+  font-size: 1rem;
+  margin-top: 10px;
+  color: #2c3e50;
+  font-weight: bold;
+}
+
+.form-input[type="file"] {
+  border: none;
+  padding: 5px;
+  background: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+}
+
+/* Image preview */
+.image-preview {
+  margin-top: 15px;
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .form-container {
+    max-width: 90%;
+    padding: 30px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    padding: 10px;
+  }
+
+  .form-container {
+    margin-left: 0;
+    padding: 20px;
+    width: 95%;
+  }
+
+  .form-button {
+    font-size: 1rem;
+  }
+
+  form {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-container h2 {
+    font-size: 1.5rem;
+  }
+
+  .form-button {
+    font-size: 0.9rem;
+    padding: 12px;
+  }
+
+  .sidebar a {
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+}

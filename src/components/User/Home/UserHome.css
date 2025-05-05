@@ -1,0 +1,302 @@
+/* Modern UserHome.css */
+
+body {
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  background: linear-gradient(to right, #edf1f5, #f8fafc);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: url('../../assets/link.jpg') center/cover no-repeat;
+}
+
+.userhome-container {
+  position: relative;
+  max-width: 800px;
+  margin: 4rem auto;
+  padding: 2.5rem 2rem;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+}
+
+.userhome-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 2rem;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+/* Logout Button */
+.logout-btn {
+  background-color: #f44336;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.logout-btn:hover {
+  background-color: #d32f2f;
+}
+
+/* User Profile Section (Top right corner) */
+.user-profile {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.profile-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #e5e7eb;
+  margin-right: 10px;
+}
+
+.profile-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.login-logo {
+  max-width: 200px;
+  margin-bottom: 2rem;
+  margin: auto
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.profile-info h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+/* Task List Section */
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.task-item {
+  padding: 1.2rem 1.5rem;
+  border-radius: 16px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  transition: box-shadow 0.2s ease;
+}
+
+.task-item:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+}
+
+.task-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.task-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.task-status {
+  font-size: 14px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.task-status.pending {
+  background-color: #fff4cc;
+  color: #9a6e00;
+}
+
+.task-status.done {
+  background-color: #cbf3cd;
+  color: #276738;
+}
+
+.task-description-input {
+  width: 94%;
+  margin-top: 12px;
+  padding: 12px 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  font-size: 15px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 70px;
+  background-color: #f1f5f9;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.task-description-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  background-color: #ffffff;
+}
+
+.done .task-title {
+  text-decoration: line-through;
+  color: #94a3b8;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Softer background overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Modal fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 15px;
+  width: 500px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
+  transform: translateY(-30px);
+  animation: modalIn 0.3s ease-out forwards;
+}
+
+/* Modal content entrance animation */
+@keyframes modalIn {
+  from {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.modal-header h3 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.close-modal {
+  background-color: transparent;
+  border: none;
+  padding: 8px;
+  font-size: 24px;
+  color: #1f2937;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.close-modal:hover {
+  color: #e11d48; /* Color change on hover */
+}
+
+.close-modal:focus {
+  outline: none;
+}
+
+/* Modal body */
+.modal-body .user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.modal-body .user-details div {
+  font-size: 16px;
+  color: #6b7280;
+}
+
+.modal-body .user-details div strong {
+  color: #111827;
+}
+
+.modal-body .user-details .user-info {
+  padding: 12px 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  font-size: 16px;
+  background-color: #f1f5f9;
+  color: #111827;
+  cursor: not-allowed; /* Indicate that it's non-editable */
+}
+
+/* Additional hover and focus effects for inputs */
+.modal-body input:hover,
+.modal-body .user-info:hover {
+  background-color: #e2e8f0;
+}
+
+/* Placeholder styling */
+.modal-body input::placeholder {
+  color: #a0aec0;
+}
+
+/* Adding a subtle spinner to the modal */
+.modal-body .loading-spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 2s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
