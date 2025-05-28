@@ -7,6 +7,7 @@ import Login from "./components/Login/Login";
 import Home from "./components/User/Home/UserHome";
 import Task from "./components/Admin/UserTask/UserTask";
 import AddUsers from "./components/Admin/AddUsers/AddUsers";
+import ViewReport from "./components/Admin/ViewReport/ViewReport";
 import "./App.css";
 
 export default function App() {
@@ -23,6 +24,7 @@ export default function App() {
         <Route path="/task" element={<Task />} />
         <Route path="/add-user" element={<AddUsers />} />
         <Route path="/home" element={<Home />} />
+        <Route path="/viewRepot" element={<ViewReport />} />
       </Routes>
     </Router>
   );

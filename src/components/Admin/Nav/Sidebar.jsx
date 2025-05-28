@@ -103,7 +103,8 @@ const Sidebar = () => {
       <nav>
         <Link to="/dashboard">🏠 Dashboard</Link>
         <Link to="/plants">🌱 View Plants</Link>
-        <Link to="/report">📋 View Report</Link>
+        <Link to="/report">📋 Generate Report</Link>
+        <Link to="/viewRepot">📝 View Report</Link>
         <Link to="/task">📝 View Task</Link>
         <Link to="/add-user">➕👤 Add User</Link>
       </nav>

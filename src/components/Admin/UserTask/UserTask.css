@@ -1,162 +1,5 @@
 /* Task Container */
 .task-container {
-  max-width: 900px; /* Increased width for larger content */
-  margin: 3rem auto;
-  padding: 2.5rem;
-  background: #ffffff;
-  border-radius: 15px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Softer shadow for a modern look */
-  font-family: 'Segoe UI', sans-serif;
-  border: 1px solid #e5e7eb;
-}
-
-/* Heading */
-.task-heading {
-  text-align: center;
-  font-size: 30px;
-  font-weight: 700;
-  color: #1e293b;
-  margin-bottom: 2rem;
-  letter-spacing: 0.5px;
-}
-
-/* Error message for unauthorized users */
-.error-message {
-  color: #d32f2f;
-  background-color: #fbe9e7;
-  padding: 10px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  font-size: 16px;
-}
-
-/* Task Form */
-.task-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-}
-
-.task-form input,
-.task-form textarea {
-  padding: 14px 18px; /* Increased padding for a better look */
-  border: 1px solid #d1d5db;
-  border-radius: 8px; /* Slightly smaller border radius */
-  font-size: 16px;
-  background-color: #f9fafb; /* Subtle background for form fields */
-  transition: all 0.3s ease;
-}
-
-.task-form input:focus,
-.task-form textarea:focus {
-  border-color: #3b82f6; /* Focus effect with blue border */
-  background-color: #ffffff;
-  outline: none;
-}
-
-/* Textarea */
-.task-form textarea {
-  resize: vertical;
-  min-height: 100px; /* Slightly increased height for textarea */
-}
-
-/* Button */
-.task-form button {
-  padding: 12px 18px;
-  font-size: 16px;
-  background-color: #3b82f6;
-  color: #ffffff;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s ease, transform 0.2s ease;
-}
-
-.task-form button:hover {
-  background-color: #2563eb;
-  transform: translateY(-2px); /* Subtle hover effect */
-}
-
-.task-form button:active {
-  background-color: #1d4ed8;
-  transform: translateY(0); /* Active button effect */
-}
-
-/* Task List */
-.task-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-/* Task Card */
-.task-card {
-  padding: 1.5rem 2rem; /* Increased padding for larger task cards */
-  border-radius: 12px;
-  background-color: #f9fafb;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08); /* Softer shadow */
-  transition: box-shadow 0.3s ease; /* Smooth transition for hover effect */
-}
-
-.task-card:hover {
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); /* Increased shadow on hover */
-}
-
-.task-title {
-  font-size: 20px;
-  font-weight: 600;
-  color: #111827;
-  margin-bottom: 0.5rem;
-  letter-spacing: 0.5px;
-}
-
-.task-description {
-  font-size: 15px;
-  color: #4b5563;
-  margin-bottom: 12px;
-}
-
-.task-status {
-  font-size: 14px;
-  font-weight: 600;
-  padding: 6px 14px;
-  border-radius: 16px;
-  display: inline-block;
-  text-transform: uppercase; /* Make status more noticeable */
-  letter-spacing: 1px;
-}
-
-/* Pending and Done Status Styles */
-.task-status.pending {
-  background: #fff3cd;
-  color: #856404;
-}
-
-.task-status.done {
-  background: #d1e7dd;
-  color: #0f5132;
-}
-
-/* Select Dropdown for Assigning Tasks */
-.task-form select {
-  padding: 12px 16px;
-  font-size: 16px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  background-color: #f9fafb;
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.task-form select:focus {
-  border-color: #3b82f6;
-  background-color: #ffffff;
-  outline: none;
-}
-/* Task Container */
-.task-container {
   max-width: 900px;
   margin: 3rem auto;
   padding: 2.5rem;
@@ -185,9 +28,27 @@
   border-radius: 8px;
   margin-bottom: 20px;
   font-size: 16px;
+  text-align: center;
 }
 
-/* Modal overlay */
+/* Open Modal Button */
+.open-modal-button {
+  padding: 12px 18px;
+  font-size: 16px;
+  background-color: #3b82f6;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.open-modal-button:hover {
+  background-color: #2563eb;
+}
+
+/* Modal Overlay */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -201,7 +62,7 @@
   z-index: 100;
 }
 
-/* Modal content */
+/* Modal Content */
 .modal-content {
   background-color: #ffffff;
   padding: 2rem;
@@ -210,7 +71,7 @@
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }
 
-/* Modal header */
+/* Modal Header */
 .modal-header {
   display: flex;
   justify-content: space-between;
@@ -236,22 +97,6 @@
 
 .close-modal:hover {
   background-color: #f1f5f9;
-}
-
-.open-modal-button {
-  padding: 12px 18px;
-  font-size: 16px;
-  background-color: #3b82f6;
-  color: #ffffff;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-  margin-bottom: 20px;
-}
-
-.open-modal-button:hover {
-  background-color: #2563eb;
 }
 
 /* Task Form */
@@ -280,6 +125,32 @@
   outline: none;
 }
 
+.task-form textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.task-form button {
+  padding: 12px 18px;
+  font-size: 16px;
+  background-color: #3b82f6;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.task-form button:hover {
+  background-color: #2563eb;
+  transform: translateY(-2px);
+}
+
+.task-form button:active {
+  background-color: #1d4ed8;
+  transform: translateY(0);
+}
+
 /* Task List */
 .task-list {
   display: flex;
@@ -306,6 +177,7 @@
   font-weight: 600;
   color: #111827;
   margin-bottom: 0.5rem;
+  letter-spacing: 0.5px;
 }
 
 .task-description {
@@ -314,6 +186,27 @@
   margin-bottom: 12px;
 }
 
+/* Assigned User Name */
+.task-user {
+  font-size: 15px;
+  color: #1e293b;
+  font-weight: 500;
+  margin-top: 0.75rem;
+}
+
+.task-user strong {
+  color: #0f172a;
+  margin-left: 6px;
+}
+
+/* Created Time */
+.task-time {
+  font-size: 14px;
+  color: #475569;
+  margin-top: 0.4rem;
+}
+
+/* Task Status */
 .task-status {
   font-size: 14px;
   font-weight: 600;
@@ -322,6 +215,7 @@
   display: inline-block;
   text-transform: uppercase;
   letter-spacing: 1px;
+  margin-top: 0.5rem;
 }
 
 .task-status.pending {

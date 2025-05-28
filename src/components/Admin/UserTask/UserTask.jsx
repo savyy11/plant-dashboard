@@ -10,143 +10,138 @@ import {
   getDoc,
   doc,
   serverTimestamp,
+  getDocs,
 } from "firebase/firestore";
 import "./UserTask.css";
 
 const UserTask = () => {
   const [tasks, setTasks] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [userMap, setUserMap] = useState({});
+  const [messages, setMessages] = useState([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [isUser, setIsUser] = useState(false); // To track if the logged-in user is authorized
-  const [users, setUsers] = useState([]); // To store list of users for assigning tasks
-  const [selectedUserEmail, setSelectedUserEmail] = useState(""); // To store the selected user email for assigning tasks
-  const [isModalOpen, setIsModalOpen] = useState(false); // To track the modal visibility for adding tasks
+  const [isUser, setIsUser] = useState(false);
+  const [userRole, setUserRole] = useState("");
+  const [adminEmail, setAdminEmail] = useState("");
+  const [selectedUserEmail, setSelectedUserEmail] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isMessagePopupOpen, setIsMessagePopupOpen] = useState(false);
 
   useEffect(() => {
-    const user = auth.currentUser;
-    if (!user) return;
+    const currentUser = auth.currentUser;
+    if (!currentUser) return;
 
-    // Check the role of the user in the Firestore users collection
-    const userRef = doc(db, "users", user.uid); // Reference to the user's document in Firestore
-    const fetchUserRole = async () => {
+    const userRef = doc(db, "users", currentUser.uid);
+
+    const fetchData = async () => {
       try {
-        const docSnap = await getDoc(userRef);
-        if (docSnap.exists()) {
-          const userData = docSnap.data();
-          // Check if the role is "admin"
-          if (userData.role === "admin") {
-            setIsUser(true); // Admins can assign tasks to other users
-          } else if (userData.role === "user") {
-            setIsUser(true); // Normal users can only add tasks for themselves
-          } else {
-            setIsUser(false);
-          }
-        } else {
-          console.log("No such user document!");
-          setIsUser(false);
-        }
-      } catch (error) {
-        console.error("Error fetching user role:", error);
-        setIsUser(false);
-      }
-    };
-    fetchUserRole();
+        const userSnap = await getDoc(userRef);
+        if (!userSnap.exists()) return;
 
-    // Fetch users for task assignment (only if the user is an admin)
-    if (isUser) {
-      const usersRef = collection(db, "users");
-      const unsubscribeUsers = onSnapshot(usersRef, (snapshot) => {
-        const allUsers = snapshot.docs
-          .map((doc) => ({
+        const currentUserData = userSnap.data();
+        const role = currentUserData.role;
+        const currentEmail = currentUser.email;
+        setUserRole(role);
+        if (role === "admin" || role === "user") setIsUser(true);
+        if (role === "admin") setAdminEmail(currentEmail);
+
+        const usersSnapshot = await getDocs(collection(db, "users"));
+        const allUsers = usersSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setUsers(allUsers);
+
+        const emailToName = {};
+        allUsers.forEach((u) => {
+          emailToName[u.email] = u.name;
+        });
+        setUserMap(emailToName);
+
+        const taskRef = collection(db, "tasks");
+        const taskQuery =
+          role === "user"
+            ? query(taskRef, where("userEmail", "==", currentEmail))
+            : taskRef;
+
+        const unsubscribeTasks = onSnapshot(taskQuery, (snapshot) => {
+          const allTasks = snapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),
-          }))
-          .filter((user) => user.role === "user"); // Filter users with role "user"
-        setUsers(allUsers);
-      });
+          }));
+          setTasks(allTasks);
+        });
 
-      return () => unsubscribeUsers();
-    }
+        // Real-time message fetch only if admin
+        let unsubscribeMessages;
+        if (role === "admin") {
+          unsubscribeMessages = onSnapshot(collection(db, "messages"), (snapshot) => {
+            const filtered = snapshot.docs
+              .map((doc) => ({ id: doc.id, ...doc.data() }))
+              .filter((msg) => msg.toEmail === currentEmail);
+            setMessages(filtered);
+          });
+        }
 
-    // Fetch tasks related to the logged-in user's email
-    const q = query(collection(db, "tasks"), where("userEmail", "==", user.email));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const userTasks = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setTasks(userTasks);
-    });
+        return () => {
+          unsubscribeTasks();
+          if (unsubscribeMessages) unsubscribeMessages();
+        };
+      } catch (err) {
+        console.error("Error fetching data:", err);
+      }
+    };
 
-    return () => unsubscribe();
-  }, [isUser]);
+    fetchData();
+  }, []);
 
   const handleAddTask = async (e) => {
     e.preventDefault();
-    const user = auth.currentUser;
-    if (!user) return alert("User not logged in");
+    const currentUser = auth.currentUser;
+    if (!currentUser || !title.trim() || !description.trim()) return;
 
-    if (!title.trim() || !description.trim()) return;
+    const assignedEmail = selectedUserEmail || currentUser.email;
 
-    // Ensure the user is authorized to add tasks
-    if (!isUser) {
-      return alert("You do not have permission to assign tasks.");
-    }
+    await addDoc(collection(db, "tasks"), {
+      title,
+      description,
+      status: "pending",
+      userEmail: assignedEmail,
+      createdAt: serverTimestamp(),
+    });
 
-    // If the user is an admin, allow them to assign tasks to others
-    if (isUser && selectedUserEmail) {
-      // Add task for the selected user
-      await addDoc(collection(db, "tasks"), {
-        title,
-        description,
-        status: "pending",
-        userEmail: selectedUserEmail, // Assign the task to the selected user
-        createdAt: serverTimestamp(),
-      });
-    } else {
-      // Add task for the logged-in user if no user is selected
-      await addDoc(collection(db, "tasks"), {
-        title,
-        description,
-        status: "pending",
-        userEmail: user.email, // Store userEmail for task association
-        createdAt: serverTimestamp(),
-      });
-    }
-
-    setTitle(""); // Reset input field after task is added
-    setDescription(""); // Reset input field after task is added
-    closeModal(); // Close modal after task is added
+    setTitle("");
+    setDescription("");
+    closeModal();
   };
 
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+  const openMessagePopup = () => setIsMessagePopupOpen(true);
+  const closeMessagePopup = () => setIsMessagePopupOpen(false);
 
   return (
     <div className="task-container">
       <Sidebar />
       <h2 className="task-heading">📝 My Tasks</h2>
 
-      {/* Error message for unauthorized users */}
-      {!isUser && (
-        <div className="error-message">
-          Waiting......
+      {!isUser && <div className="error-message">Waiting...</div>}
+
+      {isUser && (
+        <div className="task-actions">
+          <button className="open-modal-button" onClick={openModal}>
+            ➕ Add New Task
+          </button>
+          {userRole === "admin" && (
+            <button className="open-modal-button" onClick={openMessagePopup}>
+              📩 View Messages
+            </button>
+          )}
         </div>
       )}
 
-      {/* Button to open task creation modal */}
-      {isUser && (
-        <button className="open-modal-button" onClick={openModal}>
-          Add New Task
-        </button>
-      )}
-
-      {/* Modal for task assignment */}
+      {/* Task Modal */}
       {isModalOpen && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -155,19 +150,21 @@ const UserTask = () => {
               <button className="close-modal" onClick={closeModal}>X</button>
             </div>
             <form className="task-form" onSubmit={handleAddTask}>
-              {isUser && (
+              {userRole === "admin" && (
                 <div>
-                  <label>Select User to Assign Task:</label>
+                  <label>Assign to:</label>
                   <select
                     value={selectedUserEmail}
                     onChange={(e) => setSelectedUserEmail(e.target.value)}
                   >
-                    <option value="">Select User</option>
-                    {users.map((user) => (
-                      <option key={user.id} value={user.email}>
-                        {user.email}
-                      </option>
-                    ))}
+                    <option value="">Myself</option>
+                    {users
+                      .filter((u) => u.role === "user")
+                      .map((user) => (
+                        <option key={user.id} value={user.email}>
+                          {user.name} ({user.email})
+                        </option>
+                      ))}
                   </select>
                 </div>
               )}
@@ -190,7 +187,32 @@ const UserTask = () => {
         </div>
       )}
 
-      {/* Task list */}
+      {/* Message Popup */}
+      {isMessagePopupOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h3>📨 Messages to Admin</h3>
+              <button className="close-modal" onClick={closeMessagePopup}>X</button>
+            </div>
+            <div className="modal-body">
+              {messages.length > 0 ? (
+                messages.map((msg) => (
+                  <div key={msg.id} className="message-box">
+                    <p><strong>From:</strong> {msg.fromName} ({msg.fromEmail})</p>
+                    <p><strong>Message:</strong> {msg.message}</p>
+                    <p><strong>Sent At:</strong> {msg.createdAt?.toDate().toLocaleString() || "N/A"}</p>
+                  </div>
+                ))
+              ) : (
+                <p>No messages found.</p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Task List */}
       <div className="task-list">
         {tasks.length > 0 ? (
           tasks.map((task) => (
@@ -199,6 +221,12 @@ const UserTask = () => {
               <div className="task-description">{task.description}</div>
               <div className={`task-status ${task.status}`}>
                 {task.status === "done" ? "✅ Done" : "⏳ Pending"}
+              </div>
+              <div className="task-user">
+                👤 Assigned To: <strong>{userMap[task.userEmail] || task.userEmail}</strong>
+              </div>
+              <div className="task-time">
+                📅 Created At: {task.createdAt?.toDate ? task.createdAt.toDate().toLocaleString() : "N/A"}
               </div>
             </div>
           ))

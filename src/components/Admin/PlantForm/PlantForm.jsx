@@ -9,67 +9,27 @@ const PlantForm = ({ plant }) => {
   const navigate = useNavigate();
   const { register, handleSubmit, reset } = useForm();
 
-  // Effect to update form values when plant is available (for editing)
   useEffect(() => {
     if (plant) {
-      // Reset form data with the plant data once available
       reset(plant);
     }
   }, [plant, reset]);
 
-  // Function to handle adding a new plant
   const handleAddPlant = async (data) => {
     try {
-      let payload = { ...data };
-
-      // If an image is selected, use FormData; otherwise, send JSON
-      if (data.image && data.image.length > 0) {
-        const formData = new FormData();
-        Object.keys(data).forEach((key) => {
-          if (key === "image") {
-            formData.append("image", data.image[0]); // Only add image if exists
-          } else {
-            formData.append(key, data[key]);
-          }
-        });
-
-        await addPlant(formData); // Add a new plant
-      } else {
-        // Send as JSON if no image is uploaded
-        await addPlant(payload); // Add a new plant
-      }
-
-      reset(); // Reset the form after successful submission
-      navigate("/plants"); // Redirect to the plants list
+      await addPlant(data);
+      reset();
+      navigate("/plants");
     } catch (error) {
       console.error("Error adding plant data:", error);
     }
   };
 
-  // Function to handle editing an existing plant
   const handleEditPlant = async (data) => {
     try {
-      let payload = { ...data };
-
-      // If an image is selected, use FormData; otherwise, send JSON
-      if (data.image && data.image.length > 0) {
-        const formData = new FormData();
-        Object.keys(data).forEach((key) => {
-          if (key === "image") {
-            formData.append("image", data.image[0]); // Only add image if exists
-          } else {
-            formData.append(key, data[key]);
-          }
-        });
-
-        await updatePlant(plant.id, formData); // Update the existing plant
-      } else {
-        // Send as JSON if no image is uploaded
-        await updatePlant(plant.id, payload); // Update the existing plant
-      }
-
-      reset(); // Reset the form after successful submission
-      navigate("/plants"); // Redirect to the plants list
+      await updatePlant(plant.id, data);
+      reset();
+      navigate("/plants");
     } catch (error) {
       console.error("Error updating plant data:", error);
     }
@@ -77,9 +37,9 @@ const PlantForm = ({ plant }) => {
 
   const onSubmit = (data) => {
     if (plant) {
-      handleEditPlant(data); // If plant exists, handle edit
+      handleEditPlant(data);
     } else {
-      handleAddPlant(data); // Otherwise, handle add
+      handleAddPlant(data);
     }
   };
 
@@ -88,29 +48,50 @@ const PlantForm = ({ plant }) => {
       <Sidebar />
       <div className="form-container">
         <h2>{plant ? "Edit Plant" : "Add Plant"}</h2>
-        <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
-          <input {...register("cultivation", { required: true })} placeholder="Cultivation" className="form-input" required />
-          <input {...register("climaticZone", { required: true })} placeholder="Climatic Zone (Wet, Dry, Intermediate)" className="form-input" />
-          <input {...register("soilCondition", { required: true })} placeholder="Soil Condition (Sand, Loam, Clay)" className="form-input" />
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <input {...register("no")} placeholder="No" className="form-input" required />
+          <input {...register("cultivation")} placeholder="Cultivation" className="form-input" required />
+          
+          <select {...register("climaticZone")} className="form-input">
+            <option value="">Select Climatic Zone</option>
+            <option value="Wet">Wet</option>
+            <option value="Dry">Dry</option>
+            <option value="Intermediate">Intermediate</option>
+          </select>
+          <select {...register("soilCondition")} className="form-input">
+            <option value="">Select Soil Condition</option>
+            <option value="Sand">Sand</option>
+            <option value="Loam">Loam</option>
+            <option value="Clay">Clay</option>
+          </select>
           <input {...register("holeSize")} placeholder="Hole Size" className="form-input" />
           <input {...register("spacing")} placeholder="Spacing" className="form-input" />
           <input {...register("nurseryPeriod")} placeholder="Nursery Period (days)" className="form-input" />
           <input {...register("plantMaterialType")} placeholder="Plant Material Type" className="form-input" />
           <input {...register("plantMaterialRequirementPerAcre")} placeholder="Plant Material Requirement Per Acre (kg)" className="form-input" />
           <input {...register("plantsRequirementPerAcre")} placeholder="Plants Requirement Per Acre" className="form-input" />
-          <input {...register("harvestingPeriod")} placeholder="Harvesting Period" className="form-input" />
+          <input {...register("harvestingPeriod")} placeholder="Harvesting Period (Days)" className="form-input" />
           <input {...register("perPlantYield")} placeholder="Per Plant Yield (kg)" className="form-input" />
-          <input {...register("expectedYieldPerAcre")} placeholder="Expected Yield Per Acre Fresh (kg)" className="form-input" />
+          <input {...register("expectedYieldPerAcreFresh")} placeholder="Expected Yield Per Acre Fresh (kg)" className="form-input" />
+          <input {...register("expectedYieldPerAcreDry")} placeholder="Expected Yield Per Acre Dry (kg)" className="form-input" />
           <input {...register("ratio")} placeholder="Ratio" className="form-input" />
-          <input {...register("basalFertilizer")} placeholder="Basal Fertilizer (kg)" className="form-input" />
-          <input {...register("firstApplication")} placeholder="1st Application (kg)" className="form-input" />
-          <input {...register("firstApplicationDate")} placeholder="1st Application Date" className="form-input" />
-          <input {...register("secondApplication")} placeholder="2nd Application (kg)" className="form-input" />
-          <input {...register("secondApplicationDate")} placeholder="2nd Application Date" className="form-input" />
-          <input {...register("growingStage")} placeholder="Growing Stage" className="form-input" />
-          <input {...register("reproductiveStage")} placeholder="Reproductive Stage" className="form-input" />
-          <input {...register("diseases")} placeholder="Common Diseases" className="form-input" />
-          <input {...register("pests")} placeholder="Common Pests" className="form-input" />
+          <input {...register("fertilizerApplicationPerAcreBarselKGTimeDuration")} placeholder="Fertilizer Application Per Acre Barsel (kg) Time Duration" className="form-input" />
+          <input {...register("fertilizerApplicationPerAcreBarselKGRatioOfFertilzer")} placeholder="Fertilizer Application Per Acre Barsel (kg) Ratio Of Fertilzer" className="form-input" />
+          <input {...register("fertilizerApplicationPerAcreBarselKGAmountOfFertilzer")} placeholder="Fertilizer Application Per Acre Barsel (kg) Amount Of Fertilzer" className="form-input" />
+          <input {...register("fertilizerApplicationPerAcre1stApplyingTimeDuration")} placeholder="Fertilizer Application Per Acre 1st Applying Time Duration" className="form-input" />
+          <input {...register("fertilizerApplicationPerAcre1stApplyingRatioOfFertilzer")} placeholder="Fertilizer Application Per Acre 1st Applying Ratio Of Fertilzer" className="form-input" />
+          <input {...register("fertilizerApplicationPerAcre1stApplyingAmountOfFertilzer")} placeholder="Fertilizer Application Per Acre 1st Applying Amount Of Fertilzer" className="form-input" />
+          <input {...register("fertilizerApplicationPerAcre2stApplyingTimeDuration")} placeholder="Fertilizer Application Per Acre 2st Applying Time Duration" className="form-input" />
+          <input {...register("fertilizerApplicationPerAcre2stApplyingRatioOfFertilzer")} placeholder="Fertilizer Application Per Acre 2st Applying Ratio Of Fertilzer" className="form-input" />
+          <input {...register("fertilizerApplicationPerAcre2stApplyingAmountOfFertilzer")} placeholder="Fertilizer Application Per Acre 2st Applying Amount Of Fertilzer" className="form-input" />
+          <input {...register("fertilizerApplicationPerAcreGrowingStageTimeDuration")} placeholder="Fertilizer Application Per Acre Growing Stage Time Duration" className="form-input" />
+          <input {...register("fertilizerApplicationPerAcreGrowingStageRatioOfFertilzer")} placeholder="Fertilizer Application Per Acre Growing Stage Ratio Of Fertilzer" className="form-input" />
+          <input {...register("fertilizerApplicationPerAcreGrowingStageAmountOfFertilzer")} placeholder="Fertilizer Application Per Acre Growing Stage Amount Of Fertilzer" className="form-input" />
+          <input {...register("fertilizerApplicationPerAcreReproductiveStageTimeDuration")} placeholder="Fertilizer Application Per Acre Reproductive Stage Time Duration" className="form-input" />
+          <input {...register("fertilizerApplicationPerAcreReproductiveStageRatioOfFertilzer")} placeholder="Fertilizer Application Per Acre Reproductive Stage Ratio Of Fertilzer" className="form-input" />
+          <input {...register("fertilizerApplicationPerAcreReproductiveStageAmountOfFertilzer")} placeholder="Fertilizer Application Per Acre Reproductive Stage Amount Of Fertilzer" className="form-input" />
+          <input {...register("diseases")} placeholder="Diseases" className="form-input" />
+          <input {...register("pests")} placeholder="Pests" className="form-input" />
           
           <button type="submit" className="form-button">{plant ? "Update" : "Add"}</button>
         </form>

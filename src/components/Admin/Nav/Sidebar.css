@@ -76,6 +76,14 @@
   color: #ffffff;
 }
 
+.user-details {
+  background-color: #ffffff;
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: #000000;
+  font-size: 15px;
+}
+
 /* ==========================
  Responsive Sidebar
 ========================== */

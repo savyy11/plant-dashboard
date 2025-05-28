@@ -23,26 +23,36 @@ const PlantList = () => {
         <table className="plant-table">
           <thead>
             <tr>
+              <th>No</th>
               <th>Cultivation</th>
-              <th>ClimaticZone</th>
-              <th>SoilCondition</th>
+              <th>Climatic Zone</th>
+              <th>Soil Condition</th>
               <th>HoleSize</th>
               <th>Spacing</th>
-              <th>NurseryPeriod</th>
-              <th>PlantMaterialType</th>
-              <th>PlantMaterialRequirementPerAcre</th>
+              <th>Nursery Period (Days)</th>
+              <th>Plant Material Type</th>
+              <th>Plant Material Requirement Per Acre</th>
               <th>PlantsRequirementPerAcre</th>
-              <th>HarvestingPeriod</th>
-              <th>PerPlantYield</th>
-              <th>ExpectedYieldPerAcre</th>
+              <th>Harvesting Period (Days)</th>
+              <th>Per Plant Yield (KG)</th>
+              <th>Expected Yield Per Acre Fresh (KG)</th>
+              <th>Expected Yield Per Acre Dry (KG)</th>
               <th>Ratio</th>
-              <th>BasalFertilizer</th>
-              <th>FirstApplication</th>
-              <th>FirstApplicationDate(Days)</th>
-              <th>SecondApplication</th>
-              <th>SecondApplicationDate(Days)</th>
-              <th>GrowingStage</th>
-              <th>ReproductiveStage</th>
+              <th>Fertilizer Application Per Acre Barsel (KG) Time Duration</th>
+              <th>Fertilizer Application Per Acre Barsel (KG) Ratio Of Fertilzer</th>
+              <th>Fertilizer Application Per Acre Barsel (KG) Amount Of Fertilzer</th>
+              <th>Fertilizer Application Per Acre 1st Applying Time Duration</th>
+              <th>Fertilizer Application Per Acre 1st Applying Ratio Of Fertilzer</th>
+              <th>Fertilizer Application Per Acre 1st Applying Amount Of Fertilzer</th>
+              <th>Fertilizer Application Per Acre 2st Applying Time Duration</th>
+              <th>Fertilizer Application Per Acre 2st Applying Ratio Of Fertilzer</th>
+              <th>Fertilizer Application Per Acre 2st Applying Amount Of Fertilzer</th>
+              <th>Folire Application Per Acre Growing Stage Time Duration</th>
+              <th>Folire Application Per Acre Growing Stage Ratio Of Fertilzer</th>
+              <th>Folire Application Per Acre Growing Stage Amount Of Fertilzer</th>
+              <th>Folire Application Per Acre Reproductive Stage Time Duration</th>
+              <th>Folire Application Per Acre Reproductive Stage Ratio Of Fertilzer</th>
+              <th>Folire Application Per Acre Reproductive Stage Amount Of Fertilzer</th>
               <th>Diseases</th>
               <th>Pests</th>
               <th>Actions</th>
@@ -51,6 +61,7 @@ const PlantList = () => {
           <tbody>
             {plants.map((plant) => (
               <tr key={plant.id}>
+                <td>{plant.no}</td>
                 <td>{plant.cultivation}</td>
                 <td>{plant.climaticZone}</td>
                 <td>{plant.soilCondition}</td>
@@ -62,15 +73,24 @@ const PlantList = () => {
                 <td>{plant.plantsRequirementPerAcre}</td>
                 <td>{plant.harvestingPeriod}</td>
                 <td>{plant.perPlantYield}</td>
-                <td>{plant.expectedYieldPerAcre}</td>
+                <td>{plant.expectedYieldPerAcreFresh}</td>
+                <td>{plant.expectedYieldPerAcreDry}</td>
                 <td>{plant.ratio}</td>
-                <td>{plant.basalFertilizer}</td>
-                <td>{plant.firstApplication}</td>
-                <td>{plant.firstApplicationDate}</td>
-                <td>{plant.secondApplication}</td>
-                <td>{plant.secondApplicationDate}</td>
-                <td>{plant.growingStage}</td>
-                <td>{plant.reproductiveStage}</td>
+                <td>{plant.fertilizerApplicationPerAcreBarselTimeDuration}</td>
+                <td>{plant.fertilizerApplicationPerAcreBarselRatioOfFertilzer}</td>
+                <tb>{plant.fertilizerApplicationPerAcreBarselAmountOfFertilzer}</tb>
+                <td>{plant.fertilizerApplicationPerAcre1stApplyingTimeDuration}</td>
+                <td>{plant.fertilizerApplicationPerAcre1stApplyingRatioOfFertilzer}</td>
+                <tb>{plant.fertilizerApplicationPerAcre1stApplyingAmountOfFertilzer}</tb>
+                <td>{plant.fertilizerApplicationPerAcre2stApplyingTimeDuration}</td>
+                <td>{plant.fertilizerApplicationPerAcre2stApplyingRatioOfFertilzer}</td>
+                <tb>{plant.fertilizerApplicationPerAcre2stApplyingAmountOfFertilzer}</tb>
+                <td>{plant.fertilizerApplicationPerAcreGrowingStageTimeDuration}</td>
+                <td>{plant.fertilizerApplicationPerAcreGrowingStageRatioOfFertilzer}</td>
+                <tb>{plant.fertilizerApplicationPerAcreGrowingStageAmountOfFertilzer}</tb>
+                <td>{plant.fertilizerApplicationPerAcreReproductiveStageTimeDuration}</td>
+                <td>{plant.fertilizerApplicationPerAcreReproductiveStageRatioOfFertilzer}</td>
+                <tb>{plant.fertilizerApplicationPerAcreReproductiveStageAmountOfFertilzer}</tb>
                 <td>{plant.diseases}</td>
                 <td>{plant.pests}</td>
                 

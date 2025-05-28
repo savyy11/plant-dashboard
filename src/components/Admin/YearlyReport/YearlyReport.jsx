@@ -1,90 +1,178 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Sidebar from "../Nav/Sidebar";
 import "./YearlyReport.css";
-import { getPlants, updatePlant } from "../../../services/PlantService";
+import { getPlants } from "../../../services/PlantService";
+import { collection, doc, setDoc } from "firebase/firestore";
+import { db } from "../../../firebase";
+
+const getLastDateOfMonth = (year, monthIndex) =>
+  new Date(year, monthIndex + 1, 0);
+
+const monthNames = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
+
+const stageOrder = [
+  "Expected Harvest Date",
+  "Reproductive Stage",
+  "Growing Stage",
+  "2nd Fertilizer",
+  "1st Fertilizer",
+  "Planting",
+  "Land Preparation",
+  "Nursery",
+  "Total Cycle Duration",
+  "Seeds Required",
+  "Area Required (acres)"
+];
 
 const YearlyReport = () => {
   const [cultivation, setCultivation] = useState("");
-  const [expectedYield, setExpectedYield] = useState(""); // Expected output in KG
-  const [expectedDate, setExpectedDate] = useState(""); // Expected harvest date
-  const [calculatedData, setCalculatedData] = useState(null); // Store calculated data
+  const [monthlyYields, setMonthlyYields] = useState(Array(12).fill(""));
+  const [year] = useState(new Date().getFullYear());
+  const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(false);
   const [notFound, setNotFound] = useState(false);
 
-  // Fetch report data based on the cultivation name
-  const fetchReport = async () => {
-    if (!cultivation.trim()) return;
+  const handleMonthlyYieldChange = (index, value) => {
+    const updated = [...monthlyYields];
+    updated[index] = value;
+    setMonthlyYields(updated);
+  };
+
+  const fetchYearlyReport = async () => {
+    if (!cultivation.trim() || monthlyYields.every(v => !v)) return;
 
     setLoading(true);
     setNotFound(false);
-    setCalculatedData(null);
+    setReports([]);
 
     try {
       const allPlants = await getPlants();
-      console.log("Fetched plants from DB:", allPlants);
-
-      const match = allPlants.find((plant) => {
-        const name = plant.Cultivation || plant.cultivation || "";
+      const plant = allPlants.find((p) => {
+        const name = p.Cultivation || p.cultivation || "";
         return name.toLowerCase().trim() === cultivation.toLowerCase().trim();
       });
 
-      if (match) {
-        // When found, set initial values and calculate reverse planting data
-        calculateReversePlanting(match);
-      } else {
+      if (!plant) {
         setNotFound(true);
+        return;
       }
-    } catch (error) {
-      console.error("Error fetching data:", error);
+
+      const monthlyReports = [];
+
+      for (let i = 0; i < 12; i++) {
+        const expectedYield = parseFloat(monthlyYields[i]);
+        if (!expectedYield) continue;
+
+        const harvestDate = getLastDateOfMonth(year, i);
+        const result = calculateReversePlan(plant, harvestDate, expectedYield);
+
+        monthlyReports.push({
+          cultivation,
+          month: monthNames[i],
+          expectedYield,
+          year,
+          ...result,
+        });
+      }
+
+      setReports(monthlyReports);
+    } catch (err) {
+      console.error("Error:", err);
     } finally {
       setLoading(false);
     }
   };
 
-  // Calculate the reverse planting data
-  const calculateReversePlanting = (plantData) => {
-    const expectedHarvestDate = new Date(expectedDate);
-    const plantingDate = new Date(expectedHarvestDate);
-    plantingDate.setMonth(plantingDate.getMonth() - 3); // Example: Planting 3 months before harvesting
+  const calculateReversePlan = (plantData, expectedHarvestDate, expectedYield) => {
+    const durations = {
+      reproductive: parseInt(plantData.fertilizerApplicationPerAcreReproductiveStageTimeDuration) || 0,
+      growing: parseInt(plantData.fertilizerApplicationPerAcreGrowingStageTimeDuration) || 0,
+      second: parseInt(plantData.fertilizerApplicationPerAcre2stApplyingTimeDuration) || 0,
+      first: parseInt(plantData.fertilizerApplicationPerAcre1stApplyingTimeDuration) || 0,
+      landPrep: 0,
+      nursery: parseInt(plantData.nurseryPeriod) || 0,
+    };
 
-    // Example calculations based on the dataset
-    const seedsPerAcre = plantData.plantsRequirementPerAcre || 1000; // Seeds per acre
-    const areaRequired = expectedYield / plantData.expectedYieldPerAcre; // Calculate required area based on yield
+    const timeline = [];
+    let currentDate = new Date(expectedHarvestDate);
+    let cumulativeDays = 0;
 
-    const firstApplyDate = new Date(plantingDate);
-    firstApplyDate.setDate(firstApplyDate.getDate() + 30); // 1st application after 30 days
-    const secondApplyDate = new Date(firstApplyDate);
-    secondApplyDate.setDate(secondApplyDate.getDate() + 30); // 2nd application after 30 more days
+    const addStage = (label, duration) => {
+      cumulativeDays += duration;
+      currentDate.setDate(currentDate.getDate() - duration);
+      timeline.push({
+        label,
+        date: new Date(currentDate).toLocaleDateString(),
+        daysFromHarvest: cumulativeDays,
+      });
+    };
 
-    // Use the plant data for other fields
-    const cultivationName = plantData.Cultivation || plantData.cultivation || "Unknown";
-    const firstApplication = plantData.firstApplication || "N/A";
-    const secondApplication = plantData.secondApplication || "N/A";
+    addStage("Reproductive Stage", durations.reproductive);
+    addStage("Growing Stage", durations.growing);
+    addStage("2nd Fertilizer", durations.second);
+    addStage("1st Fertilizer", durations.first);
+    addStage("Planting", 0);
+    addStage("Land Preparation", durations.landPrep);
+    addStage("Nursery", durations.nursery);
 
-    // Set the calculated data
-    setCalculatedData({
-      cultivation: cultivationName,
-      plantingDate: plantingDate.toLocaleDateString(),
-      seedsRequired: seedsPerAcre * areaRequired,
-      areaRequired: areaRequired,
-      firstApplyDate: firstApplyDate.toLocaleDateString(),
-      secondApplyDate: secondApplyDate.toLocaleDateString(),
-      firstApplication,
-      secondApplication,
-    });
+    const seedsPerAcre = plantData.plantsRequirementPerAcre || 1000;
+    const yieldPerAcre = plantData.expectedYieldPerAcre || 1;
+    const areaRequired = expectedYield / yieldPerAcre;
+
+    return {
+      expectedHarvestDate: expectedHarvestDate.toLocaleDateString(),
+      timeline,
+      totalDaysBeforeHarvest: cumulativeDays,
+      seedsRequired: Math.ceil(seedsPerAcre * areaRequired),
+      areaRequired: areaRequired.toFixed(2),
+    };
   };
 
-  // Handle saving changes to the database
-  const handleSave = async () => {
-    // Assuming the logic is to save changes to the plant data (e.g., adding new planting details)
-    if (!calculatedData) return;
+  const getStageValue = (report, stage) => {
+    if (stage === "Expected Harvest Date") return report.expectedHarvestDate;
+    if (stage === "Total Cycle Duration") return `${report.totalDaysBeforeHarvest} days`;
+    if (stage === "Seeds Required") return report.seedsRequired;
+    if (stage === "Area Required (acres)") return report.areaRequired;
+    const item = report.timeline.find(t => t.label === stage);
+    return item ? item.date : "-";
+  };
 
+  const downloadCSV = () => {
+    if (!reports.length) return;
+
+    let csv = "Stage," + reports.map(r => r.month).join(",") + "\n";
+    stageOrder.forEach(stage => {
+      const row = [stage];
+      reports.forEach(r => row.push(getStageValue(r, stage)));
+      csv += row.join(",") + "\n";
+    });
+
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `YearlyCultivationReport_${cultivation}_${year}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const saveToFirebase = async () => {
     try {
-      await updatePlant(calculatedData.id, calculatedData);
-      alert("✅ Changes saved to database!");
-    } catch (err) {
-      alert("❌ Failed to save changes.");
-      console.error(err);
+      const cultivationId = `${cultivation}_${Date.now()}`;
+      await setDoc(doc(db, "reports", cultivationId), {
+        cultivation,
+        year,
+        monthlyYields,
+        generatedAt: new Date().toISOString(),
+        reports
+      });
+      alert("✅ Reports saved to Firebase!");
+    } catch (error) {
+      console.error("❌ Error saving to Firebase:", error);
+      alert("Failed to save data to Firebase.");
     }
   };
 
@@ -92,86 +180,67 @@ const YearlyReport = () => {
     <div className="dashboard">
       <Sidebar />
       <div className="report-container">
-        <h2>📊 Yearly Report</h2>
+        <h2>📅 Yearly Cultivation Report</h2>
 
         <div className="input-section">
           <input
             type="text"
-            placeholder="Enter Cultivation Name (e.g., Tomato)"
+            placeholder="Enter Cultivation (e.g., Tomato)"
             value={cultivation}
             onChange={(e) => setCultivation(e.target.value)}
           />
-          <input
-            type="number"
-            placeholder="Enter Expected Output in KG"
-            value={expectedYield}
-            onChange={(e) => setExpectedYield(e.target.value)}
-          />
-          <input
-            type="date"
-            placeholder="Enter Expected Harvest Date"
-            value={expectedDate}
-            onChange={(e) => setExpectedDate(e.target.value)}
-          />
-          <button onClick={fetchReport}>Generate Report</button>
         </div>
 
-        {loading && <p>Loading...</p>}
-        {notFound && (
-          <p style={{ color: "red" }}>
-            No record found for "{cultivation}"
-          </p>
-        )}
+        <div className="monthly-inputs">
+          {monthNames.map((month, i) => (
+            <div key={i} className="month-input">
+              <label>{month}</label>
+              <input
+                type="number"
+                placeholder="KG"
+                value={monthlyYields[i]}
+                onChange={(e) => handleMonthlyYieldChange(i, e.target.value)}
+              />
+            </div>
+          ))}
+        </div>
 
-        {calculatedData && (
-          <>
-            {/* Editable Table for the required fields */}
+        <div className="action-buttons">
+          <button onClick={fetchYearlyReport}>Generate Report</button>
+          {reports.length > 0 && (
+            <>
+              <button onClick={downloadCSV}>📥 Download CSV</button>
+              <button onClick={saveToFirebase}>💾 Save to Firebase</button>
+            </>
+          )}
+        </div>
+
+        {loading && <p>Generating report...</p>}
+        {notFound && <p style={{ color: "red" }}>No data found for cultivation: {cultivation}</p>}
+
+        {reports.length > 0 && (
+          <div className="combined-report">
             <table className="report-table">
               <thead>
                 <tr>
-                  <th>Field</th>
-                  <th>Value</th>
+                  <th>Stage</th>
+                  {reports.map((r, i) => (
+                    <th key={i}>{r.month}</th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>Planting Date</td>
-                  <td>{calculatedData.plantingDate}</td>
-                </tr>
-                <tr>
-                  <td>Seeds Required</td>
-                  <td>{calculatedData.seedsRequired}</td>
-                </tr>
-                <tr>
-                  <td>Area Required (acres)</td>
-                  <td>{calculatedData.areaRequired}</td>
-                </tr>
-                <tr>
-                  <td>1st Apply Date</td>
-                  <td>{calculatedData.firstApplyDate}</td>
-                </tr>
-                <tr>
-                  <td>2nd Apply Date</td>
-                  <td>{calculatedData.secondApplyDate}</td>
-                </tr>
-                <tr>
-                  <td>First Application</td>
-                  <td>{calculatedData.firstApplication}</td>
-                </tr>
-                <tr>
-                  <td>Second Application</td>
-                  <td>{calculatedData.secondApplication}</td>
-                </tr>
+                {stageOrder.map((stage, i) => (
+                  <tr key={i}>
+                    <td>{stage}</td>
+                    {reports.map((r, j) => (
+                      <td key={j}>{getStageValue(r, stage)}</td>
+                    ))}
+                  </tr>
+                ))}
               </tbody>
             </table>
-
-            {/* Action Buttons */}
-            <div className="action-buttons">
-              <button onClick={handleSave} className="save-button">
-                Save Changes
-              </button>
-            </div>
-          </>
+          </div>
         )}
       </div>
     </div>

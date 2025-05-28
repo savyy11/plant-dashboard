@@ -1,70 +1,121 @@
-# Getting Started with Create React App
+**🌿Agriculture Management System for Link Natural Products (Pvt.) Ltd.**
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a real-time Agriculture Management and Annual Planning System developed for **Link Natural Company** to manage over 100 cultivations of medicinal plants efficiently. The system addresses the needs of resource planning, monitoring, and automated reporting for their agriculture division.
 
-## Available Scripts
+**📌 Project Overview**
 
-In the project directory, you can run:
+This system was built as a final year software engineering project to assist **Link Natural Company** in overcoming operational challenges in managing their agricultural resources. The software ensures:
 
-### `npm start`
+- Efficient tracking of over 100+ medicinal plant cultivations.
+- Enhanced communication and coordination among agriculture staff.
+- A scalable foundation with future plans to integrate IoT sensors and AI-driven analytics.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+**🚀 Key Features**
 
-### `npm test`
+- 📊 **Real-time Dashboards** – Separate views for Admin and Users to track key agricultural metrics.
+- ✅ **Task Assignment & Tracking** – Assign, update, and monitor tasks in real-time.
+- 📁 **Automated Report Generation** – Generate and download cultivation reports instantly.
+- 👥 **User Management** – Create and manage users with role-based access control.
+- 🔔 **Real-time Notifications** – Immediate alerts and updates for assigned users.
+- 💬 **Two-way Communication** – In-app messaging to streamline operations.
+- 📅 **Annual Planning Module** – Plan upcoming cultivation seasons with analytics insights.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+**🧰 Getting Started**
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Follow these steps to set up and run the project locally on your machine.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+🔗 GitHub Repository Link
 
-### `npm run eject`
+[https://github.com/savyy11/plant-dashboard.git](https://github.com/savyy11/plant-dashboard.git)
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+📥 Setting Up and Running the Application
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+1. Downloading the Project from GitHub
 
-## Learn More
+- Open your browser and navigate to the GitHub repository link.
+- Click the green **"Code"** button.
+- Select **"Download ZIP"** to save the project to your computer.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+2. Extracting the ZIP File Using WinRAR
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- Go to your **Downloads** folder or wherever the ZIP file was saved.
+- Right-click on the ZIP file → choose **"Extract to [Folder Name]/"**.
+- The project will be extracted into a new folder.
 
-### Code Splitting
+3. Installing Visual Studio Code (VS Code)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- Visit [https://code.visualstudio.com/](https://code.visualstudio.com/)
+- Download and install Visual Studio Code.
+- Launch it after installation.
 
-### Analyzing the Bundle Size
+4. Opening the Project in VS Code
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- In VS Code, click **File > Open Folder**.
+- Select the extracted project folder to open it in the editor.
 
-### Making a Progressive Web App
+5. Installing Node.js and npm
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- Download Node.js from [https://nodejs.org/](https://nodejs.org/)
+- Install the LTS version (includes npm).
+- After installation, restart your computer if prompted.
 
-### Advanced Configuration
+6. Installing Project Dependencies
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+- Open the integrated terminal in VS Code:  
+  Press `Ctrl + \`` or go to **Terminal > New Terminal**
+- In the terminal, navigate to the root directory of the project and run:
 
-### Deployment
+```bash
+npm install
+•	This will install all required dependencies listed in package.json.
+7. Running the Application Locally
+Run the following command in the terminal:
+npm start
+•	The app will start, and a message confirming the server is running will appear.
+•	Open your browser and go to: http://localhost:3000
+Note: If the application does not load, make sure no firewall or antivirus software is blocking it.
+```
+```
+📁 Code Structure
+plant-dashboard/
+├── public/              Static files
+├── src/
+│   ├── components/       Reusable React components
+│   ├── pages/            Application views and pages
+│   ├── services/         Firebase and utility services
+│   ├── App.js            Main app file
+│   └── index.js          Entry point
+├── package.json          Project metadata and dependencies
+└── README.md             Project overview 
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
 
-### `npm run build` fails to minify
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+.
+
+**🛠️ Technologies Used**
+
+•	**React.js** – Frontend framework
+
+•	**Firebase** – Realtime database and authentication
+
+•	**JavaScript** (ES6) – Programming language
+
+•	**Node.js & npm** – Environment and package manager
+
+•	**Visual Studio Code** – Code editor
+
+•	**CSS** – Basic structure and styling
+
+
+**🙋 Need Help?**
+
+If you face any issues while setting up or running the project, feel free to open an issue on the GitHub repository or contact the project maintainers.
+
+
